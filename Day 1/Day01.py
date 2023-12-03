@@ -1,4 +1,4 @@
-input = "./input.txt"
+input = "Day 1/input.txt"
 
 try:
     with open(input, 'r') as file:
