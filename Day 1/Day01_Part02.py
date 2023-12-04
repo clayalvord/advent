@@ -20,15 +20,11 @@ try:
     with open(input_file, 'r') as text_file:
         # Iterate through each line in the file
         for line in text_file:
-            # Translate the contents of each row based on the provided translation
-            for word, value in translation.items():
-                line = line.replace(word, value)
-
             # Store the first and last numbers for each row
             first_number = None
             last_number = None
 
-            # Iterate through each character in the translated line
+            # Iterate through each character in the line
             for char in line:
                 # Check if the character is a digit
                 if char.isdigit():
@@ -46,6 +42,9 @@ try:
                 total_sum += two_digit_number
 
                 print(f"Row: {line.strip()}, Concatenated 2-Digit Number: {two_digit_number:02d}")
+
+            else:
+                print(f"Row: {line.strip()}, No numbers found in the row.")
 
     # Print the total sum
     print(f"\nTotal Sum of Concatenated 2-Digit Numbers: {total_sum:02d}")
