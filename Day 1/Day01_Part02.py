@@ -3,6 +3,17 @@ input_file = "Day 1/input.txt"
 # variable to store the total sum
 total_sum = 0
 
+# words to values
+one = 1
+two = 2
+three = 3
+four = 4
+five = 5
+six = 6
+seven = 7
+eight = 8
+nine = 9
+
 try:
     with open(input_file, 'r') as text_file:
         
