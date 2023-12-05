@@ -3,6 +3,19 @@ input_file = "Day 1/input.txt"
 # Store the total sum
 total_sum = 0
 
+#conversion dataset
+data_set = {
+    'one': 'one1one',
+    'two': 'two2two',
+    'three': 'three3three',
+    'four': 'four4four',
+    'five': 'five5five',
+    'six': 'six6six',
+    'seven': 'seven7seven',
+    'eight': 'eight8eight',
+    'nine': 'nine9nine'
+}
+
 try:
     with open(input_file, 'r') as text_file:
         # Iterate through each line in the file
