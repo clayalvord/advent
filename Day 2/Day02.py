@@ -1,6 +1,7 @@
 import re
 
 def check_color_criteria(color, number):
+    # Check if the given color and number exceed specified criteria
     if color.lower() == 'red' and int(number) > 12:
         return f'Red exceeds 12 ({number})'
     elif color.lower() == 'green' and int(number) > 13:
@@ -23,6 +24,8 @@ def process_line(line_number, line):
         # Check if red, green, or blue exceeds criteria
         for number, color in matches:
             ignore_reason = check_color_criteria(color, number)
+            
+            # Return immediately if the criteria are exceeded
             if ignore_reason:
                 return ignore_reason, line_number
 
@@ -32,7 +35,6 @@ def print_results(line_number, line, ignore_reason):
     if ignore_reason is None:
         # Display results for the line
         print(f"Results for line {line_number}: {line.strip()}")
-        print("-" * 30)
         return line_number
     else:
         # Display the specific reason for ignoring the line
@@ -45,10 +47,14 @@ def main():
 
     try:
         with open(input_file, 'r') as text_file:
+            # Enumerate over each line with its corresponding line number
             for line_number, line in enumerate(text_file, start=1):
                 # Process each line and print results
                 ignore_reason, line_number = process_line(line_number, line)
                 total_line_numbers += print_results(line_number, line, ignore_reason)
+                
+                # Print the row separator between every row
+                print("-" * 30)
 
     except FileNotFoundError:
         print(f"Error: File '{input_file}' not found.")
