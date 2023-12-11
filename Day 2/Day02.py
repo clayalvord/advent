@@ -1,50 +1,50 @@
 import re
+from collections import defaultdict
 
-input_file = "Day 2/input.txt"
+def process_line(line):
+    color_sums = defaultdict(int)
+    ignore_reason = None
 
-try:
-    with open(input_file, 'r') as text_file:
-        # Iterate through each line in the file
-        for line in text_file:
-            # Dictionary to store sums per color for each split in the line
-            color_sums = {'red': 0, 'green': 0, 'blue': 0}
+    splits = line.split(';')
 
-            # Split the line at semicolons (;)
-            splits = line.split(';')
+    for split in splits:
+        matches = re.findall(r'(\d+)\s*([a-zA-Z]+)', split)
+        for number, color in matches:
+            color_sums[color.lower()] += int(number)
 
-            # Flag to indicate whether the row should be considered
-            consider_row = True
+        # Check if the split exceeds the criteria for blue or green
+        if color_sums['blue'] > 14 or color_sums['green'] > 13:
+            ignore_reason = 'Blue exceeds 14' if color_sums['blue'] > 14 else 'Green exceeds 13'
+            break
 
-            # Iterate through each split in the line
-            for split in splits:
-                # Extract all numbers and colors from the split using regular expressions
-                matches = re.findall(r'(\d+)\s*([a-zA-Z]+)', split)
+    return ignore_reason, color_sums
 
-                # Process each match
-                for number, color in matches:
-                    # Sum the numbers per color
-                    color_sums[color.lower()] += int(number)
+def print_results(line, ignore_reason, color_sums):
+    if ignore_reason is None:
+        print(f"Results for line: {line.strip()}")
+        for color, total_sum in color_sums.items():
+            print(f"Total sum for {color.capitalize()}: {total_sum}")
+        print("-" * 30)
+    else:
+        print(f"Ignoring line due to: {ignore_reason}: {line.strip()}")
 
-                # Check if the split exceeds the criteria for blue
-                if color_sums['blue'] > 14:
-                    consider_row = False
-                    break  # No need to continue checking if one split exceeds the criteria
+    print("=" * 30)
 
-            # Check if the row should be considered based on the splits
-            if consider_row:
-                # Print the results for each split
-                print(f"Results for line: {line.strip()}")
-                for color, total_sum in color_sums.items():
-                    print(f"Total sum for {color.capitalize()}: {total_sum}")
-                print("-" * 30)  # Separate results for each split
-            else:
-                print(f"Ignoring line due to exceeding criteria: {line.strip()}")
+def main():
+    input_file = "Day 2/input.txt"
 
-            print("=" * 30)  # Separate results for each line
+    try:
+        with open(input_file, 'r') as text_file:
+            for line in text_file:
+                ignore_reason, color_sums = process_line(line)
+                print_results(line, ignore_reason, color_sums)
 
-except FileNotFoundError:
-    print(f"Error: File '{input_file}' not found.")
-except StopIteration:
-    print("File is empty.")
-except Exception as e:
-    print(f"An error occurred: {e}")
+    except FileNotFoundError:
+        print(f"Error: File '{input_file}' not found.")
+    except StopIteration:
+        print("File is empty.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()
