@@ -31,8 +31,6 @@ def print_results(line, ignore_reason):
         # Display the specific reason for ignoring the line
         print(f"Ignoring line due to: {ignore_reason}: {line.strip()}")
 
-    print("=" * 30)
-
 def main():
     input_file = "Day 2/input.txt"
 
