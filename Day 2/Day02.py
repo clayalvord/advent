@@ -6,8 +6,11 @@ try:
     with open(input_file, 'r') as text_file:
         # Iterate through each line in the file
         for line in text_file:
-            # Extract all numbers from the line using regular expression
-            numbers = [int(match) for match in re.findall(r'\d+', line)]
+            # Split each line at the colon (:) and take the right part
+            line_data = line.split(':', 1)[-1]
+            
+            # Extract all numbers from the right part using regular expression
+            numbers = [int(match) for match in re.findall(r'\d+', line_data)]
             
             # Calculate the sum of numbers on the current line
             line_sum = sum(numbers)
