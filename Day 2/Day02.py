@@ -1,45 +1,51 @@
 import re
 
-def process_line(line):
+def check_color_criteria(color, number):
+    if color.lower() == 'red' and int(number) > 12:
+        return f'Red exceeds 12 ({number})'
+    elif color.lower() == 'green' and int(number) > 13:
+        return f'Green exceeds 13 ({number})'
+    elif color.lower() == 'blue' and int(number) > 14:
+        return f'Blue exceeds 14 ({number})'
+    return None
+
+def process_line(line_number, line):
     ignore_reason = None
 
     # Split the line into segments
     splits = line.split(';')
 
     # Process each segment
-    for split in splits:
+    for segment in splits:
         # Extract numbers and colors using regular expressions
-        matches = re.findall(r'(\d+)\s*([a-zA-Z]+)', split)
+        matches = re.findall(r'(\d+)\s*([a-zA-Z]+)', segment)
 
         # Check if red, green, or blue exceeds criteria
         for number, color in matches:
-            if color.lower() == 'red' and int(number) > 12:
-                ignore_reason = f'Red exceeds 12 ({number})'
-            elif color.lower() == 'green' and int(number) > 13:
-                ignore_reason = f'Green exceeds 13 ({number})'
-            elif color.lower() == 'blue' and int(number) > 14:
-                ignore_reason = f'Blue exceeds 14 ({number})'
+            ignore_reason = check_color_criteria(color, number)
+            if ignore_reason:
+                return ignore_reason, line_number
 
-    return ignore_reason
+    return ignore_reason, line_number
 
-def print_results(line, ignore_reason):
+def print_results(line_number, line, ignore_reason):
     if ignore_reason is None:
         # Display results for the line
-        print(f"Results for line: {line.strip()}")
+        print(f"Results for line {line_number}: {line.strip()}")
         print("-" * 30)
     else:
         # Display the specific reason for ignoring the line
-        print(f"Ignoring line due to: {ignore_reason}: {line.strip()}")
+        print(f"Ignoring line {line_number} due to: {ignore_reason}: {line.strip()}")
 
 def main():
     input_file = "Day 2/input.txt"
 
     try:
         with open(input_file, 'r') as text_file:
-            for line in text_file:
+            for line_number, line in enumerate(text_file, start=1):
                 # Process each line and print results
-                ignore_reason = process_line(line)
-                print_results(line, ignore_reason)
+                ignore_reason, line_number = process_line(line_number, line)
+                print_results(line_number, line, ignore_reason)
 
     except FileNotFoundError:
         print(f"Error: File '{input_file}' not found.")
