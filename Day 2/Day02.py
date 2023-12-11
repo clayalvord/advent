@@ -1,31 +1,34 @@
 import re
-from collections import defaultdict
 
 def process_line(line):
-    color_sums = defaultdict(int)
     ignore_reason = None
 
+    # Split the line into segments
     splits = line.split(';')
 
+    # Process each segment
     for split in splits:
+        # Extract numbers and colors using regular expressions
         matches = re.findall(r'(\d+)\s*([a-zA-Z]+)', split)
+
+        # Check if red, green, or blue exceeds criteria
         for number, color in matches:
-            color_sums[color.lower()] += int(number)
+            if color.lower() == 'red' and int(number) > 12:
+                ignore_reason = f'Red exceeds 12 ({number})'
+            elif color.lower() == 'green' and int(number) > 13:
+                ignore_reason = f'Green exceeds 13 ({number})'
+            elif color.lower() == 'blue' and int(number) > 14:
+                ignore_reason = f'Blue exceeds 14 ({number})'
 
-        # Check if the split exceeds the criteria for blue or green
-        if color_sums['blue'] > 14 or color_sums['green'] > 13:
-            ignore_reason = 'Blue exceeds 14' if color_sums['blue'] > 14 else 'Green exceeds 13'
-            break
+    return ignore_reason
 
-    return ignore_reason, color_sums
-
-def print_results(line, ignore_reason, color_sums):
+def print_results(line, ignore_reason):
     if ignore_reason is None:
+        # Display results for the line
         print(f"Results for line: {line.strip()}")
-        for color, total_sum in color_sums.items():
-            print(f"Total sum for {color.capitalize()}: {total_sum}")
         print("-" * 30)
     else:
+        # Display the specific reason for ignoring the line
         print(f"Ignoring line due to: {ignore_reason}: {line.strip()}")
 
     print("=" * 30)
@@ -36,8 +39,9 @@ def main():
     try:
         with open(input_file, 'r') as text_file:
             for line in text_file:
-                ignore_reason, color_sums = process_line(line)
-                print_results(line, ignore_reason, color_sums)
+                # Process each line and print results
+                ignore_reason = process_line(line)
+                print_results(line, ignore_reason)
 
     except FileNotFoundError:
         print(f"Error: File '{input_file}' not found.")
