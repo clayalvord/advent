@@ -21,8 +21,10 @@ try:
             # Find all part numbers in the row using the regular expression
             part_numbers = re.findall(part_number_pattern, row)
 
-            # Display or process the symbols and part numbers found in the row
-            print(f"Row {line_number}: Symbols: {symbols}, Part Numbers: {part_numbers}")
+            # Display or process the symbols and part numbers found in the row, excluding symbols with 0 count
+            found_symbols = {symbol: count for symbol, count in symbols.items() if count > 0}
+            if found_symbols:
+                print(f"Row {line_number}: Symbols: {found_symbols}, Part Numbers: {part_numbers}")
 
 except FileNotFoundError:
     print(f"Error: File '{file_path}' not found.")
