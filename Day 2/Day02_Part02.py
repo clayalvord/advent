@@ -33,8 +33,11 @@ def print_max_colors(line_number, line, max_red, max_green, max_blue):
     # Truncate the row name and display the largest number, color, and product for the line
     print(f"Line {line_number}: Max Red: {max_red}, Max Green: {max_green}, Max Blue: {max_blue}, Product: {product}, Original line: {line.strip()}")
 
+    return product
+
 def main():
     input_file = "Day 2/input.txt"
+    total_product = 0
 
     try:
         with open(input_file, 'r') as text_file:
@@ -42,10 +45,14 @@ def main():
             for line_number, line in enumerate(text_file, start=1):
                 # Calculate the largest number and color and print results
                 max_red, max_green, max_blue = calculate_max_colors(line)
-                print_max_colors(line_number, line, max_red, max_green, max_blue)
+                total_product += print_max_colors(line_number, line, max_red, max_green, max_blue)
 
                 # Print the row separator between every row
                 print("-" * 30)
+
+        # Print the overall answer
+        print("Answer:")
+        print(f"Sum of products for all lines: {total_product}")
 
     except FileNotFoundError:
         print(f"Error: File '{input_file}' not found.")
