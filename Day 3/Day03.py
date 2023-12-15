@@ -8,8 +8,8 @@ try:
         # Read the content of the file
         file_content = file.readlines()
 
-        # Define the regular expression pattern to identify numbers
-        number_pattern = r'\d+'
+        # Define the regular expression pattern to identify part numbers
+        part_number_pattern = r'\b\d+\b'
 
         # Process each row
         for line_number, row in enumerate(file_content, start=1):
@@ -18,11 +18,11 @@ try:
             for symbol in symbols:
                 symbols[symbol] = row.count(symbol)
 
-            # Find all numbers in the row using the regular expression
-            numbers = re.findall(number_pattern, row)
+            # Find all part numbers in the row using the regular expression
+            part_numbers = re.findall(part_number_pattern, row)
 
-            # Display or process the symbols and numbers found in the row
-            print(f"Row {line_number}: Symbols: {symbols}, Numbers: {numbers}")
+            # Display or process the symbols and part numbers found in the row
+            print(f"Row {line_number}: Symbols: {symbols}, Part Numbers: {part_numbers}")
 
 except FileNotFoundError:
     print(f"Error: File '{file_path}' not found.")
