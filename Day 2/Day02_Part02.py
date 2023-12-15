@@ -1,13 +1,17 @@
 import re
 
+RED_THRESHOLD = 12
+GREEN_THRESHOLD = 13
+BLUE_THRESHOLD = 14
+
 def check_color_criteria(color, number):
     # Check if the given color and number exceed specified criteria
-    if color.lower() == 'red' and int(number) > 12:
-        return f'Red exceeds 12 ({number})'
-    elif color.lower() == 'green' and int(number) > 13:
-        return f'Green exceeds 13 ({number})'
-    elif color.lower() == 'blue' and int(number) > 14:
-        return f'Blue exceeds 14 ({number})'
+    if color.lower() == 'red' and int(number) > RED_THRESHOLD:
+        return f'Red exceeds {RED_THRESHOLD} ({number})'
+    elif color.lower() == 'green' and int(number) > GREEN_THRESHOLD:
+        return f'Green exceeds {GREEN_THRESHOLD} ({number})'
+    elif color.lower() == 'blue' and int(number) > BLUE_THRESHOLD:
+        return f'Blue exceeds {BLUE_THRESHOLD} ({number})'
     return None
 
 def process_line(line_number, line):
@@ -60,7 +64,7 @@ def main():
         print(f"Error: File '{input_file}' not found.")
     except StopIteration:
         print("File is empty.")
-    except Exception as e:
+    except IOError as e:
         print(f"An error occurred: {e}")
 
     print(f"Sum of line numbers for non-ignored lines: {total_line_numbers}")
