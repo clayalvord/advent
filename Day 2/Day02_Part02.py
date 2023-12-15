@@ -1,21 +1,10 @@
 import re
 
-RED_THRESHOLD = 12
-GREEN_THRESHOLD = 13
-BLUE_THRESHOLD = 14
-
-def check_color_criteria(color, number):
-    # Check if the given color and number exceed specified criteria
-    if color.lower() == 'red' and int(number) > RED_THRESHOLD:
-        return f'Red exceeds {RED_THRESHOLD} ({number})'
-    elif color.lower() == 'green' and int(number) > GREEN_THRESHOLD:
-        return f'Green exceeds {GREEN_THRESHOLD} ({number})'
-    elif color.lower() == 'blue' and int(number) > BLUE_THRESHOLD:
-        return f'Blue exceeds {BLUE_THRESHOLD} ({number})'
-    return None
-
-def process_line(line_number, line):
-    ignore_reason = None
+def calculate_max_colors(line):
+    # Initialize variables for the largest number and color
+    max_red = 0
+    max_green = 0
+    max_blue = 0
 
     # Split the line into segments
     splits = line.split(';')
@@ -25,38 +14,33 @@ def process_line(line_number, line):
         # Extract numbers and colors using regular expressions
         matches = re.findall(r'(\d+)\s*([a-zA-Z]+)', segment)
 
-        # Check if red, green, or blue exceeds criteria
+        # Update the largest color and number
         for number, color in matches:
-            ignore_reason = check_color_criteria(color, number)
-            
-            # Return immediately if the criteria are exceeded
-            if ignore_reason:
-                return ignore_reason, line_number
+            number = int(number)
+            if color.lower() == 'red' and number > max_red:
+                max_red = number
+            elif color.lower() == 'green' and number > max_green:
+                max_green = number
+            elif color.lower() == 'blue' and number > max_blue:
+                max_blue = number
 
-    return ignore_reason, line_number
+    return max_red, max_green, max_blue
 
-def print_results(line_number, line, ignore_reason):
-    if ignore_reason is None:
-        # Display results for the line
-        print(f"Results for line {line_number}: {line.strip()}")
-        return line_number
-    else:
-        # Display the specific reason for ignoring the line
-        print(f"Ignoring line {line_number} due to: {ignore_reason}: {line.strip()}")
-        return 0  # Return 0 for ignored lines
+def print_max_colors(line_number, line, max_red, max_green, max_blue):
+    # Truncate the row name and display the largest number and color for the line
+    print(f"Line {line_number}: Max Red: {max_red}, Max Green: {max_green}, Max Blue: {max_blue}, Original line: {line.strip()}")
 
 def main():
     input_file = "Day 2/input.txt"
-    total_line_numbers = 0  # Accumulate line numbers for lines that were not ignored
 
     try:
         with open(input_file, 'r') as text_file:
             # Enumerate over each line with its corresponding line number
             for line_number, line in enumerate(text_file, start=1):
-                # Process each line and print results
-                ignore_reason, line_number = process_line(line_number, line)
-                total_line_numbers += print_results(line_number, line, ignore_reason)
-                
+                # Calculate the largest number and color and print results
+                max_red, max_green, max_blue = calculate_max_colors(line)
+                print_max_colors(line_number, line, max_red, max_green, max_blue)
+
                 # Print the row separator between every row
                 print("-" * 30)
 
@@ -66,8 +50,6 @@ def main():
         print("File is empty.")
     except IOError as e:
         print(f"An error occurred: {e}")
-
-    print(f"Sum of line numbers for non-ignored lines: {total_line_numbers}")
 
 if __name__ == "__main__":
     main()
