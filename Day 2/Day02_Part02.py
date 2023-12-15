@@ -27,8 +27,11 @@ def calculate_max_colors(line):
     return max_red, max_green, max_blue
 
 def print_max_colors(line_number, line, max_red, max_green, max_blue):
-    # Truncate the row name and display the largest number and color for the line
-    print(f"Line {line_number}: Max Red: {max_red}, Max Green: {max_green}, Max Blue: {max_blue}, Original line: {line.strip()}")
+    # Calculate the product of the max numbers
+    product = max_red * max_green * max_blue
+
+    # Truncate the row name and display the largest number, color, and product for the line
+    print(f"Line {line_number}: Max Red: {max_red}, Max Green: {max_green}, Max Blue: {max_blue}, Product: {product}, Original line: {line.strip()}")
 
 def main():
     input_file = "Day 2/input.txt"
