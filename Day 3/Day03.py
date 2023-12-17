@@ -1,16 +1,20 @@
 import re
 
-# Function to extract numbers from a given string using regular expression
-def extract_numbers(input_string):
-    return re.findall(r'\d+', input_string)
+def extract_numbers_and_chars_from_line(line):
+    # Adjust the regular expression to include the characters you want to identify
+    matches = re.finditer(r'([+*#&]+)|(\d+)', line)
+    result = [(match.group(), match.start()) for match in matches]
+    return result
 
-# Read input file and process each line
-input_file_path = "Day 3/input.txt"
+def process_input_file(file_path):
+    with open(file_path, 'r') as file:
+        for row_num, line in enumerate(file, start=1):
+            symbols_and_positions = extract_numbers_and_chars_from_line(line)
+            if symbols_and_positions:
+                print(f"Row {row_num}:")
+                for symbol, position in symbols_and_positions:
+                    print(f"    Symbol: {symbol}, Position: {position}")
 
-with open(input_file_path, 'r') as file:
-    for line_number, line in enumerate(file, start=1):
-        # Extract numbers from the current line
-        part_numbers = extract_numbers(line)
-        
-        # Print the result
-        print(f"Row {line_number}: {', '.join(part_numbers)}")
+if __name__ == "__main__":
+    input_file_path = "Day 3/input.txt"
+    process_input_file(input_file_path)
