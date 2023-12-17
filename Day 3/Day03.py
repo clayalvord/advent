@@ -1,19 +1,27 @@
 import re
 
-def extract_numbers_and_chars_from_line(line):
-    # Adjust the regular expression to include the characters you want to identify
-    matches = re.finditer(r'([+*#&]+)|(\d+)', line)
-    result = [(match.group(), match.start()) for match in matches]
-    return result
+def extract_numbers_from_line(line):
+    return [int(num) for num in re.findall(r'\d+', line)]
+
+def find_symbols_positions(line, symbols):
+    positions = {}
+    for symbol in symbols:
+        symbol_positions = [pos.start() + 1 for pos in re.finditer(re.escape(symbol), line)]
+        if symbol_positions:
+            positions[symbol] = symbol_positions
+    return positions
 
 def process_input_file(file_path):
+    symbols_to_find = "*#+$"
+    
     with open(file_path, 'r') as file:
         for row_num, line in enumerate(file, start=1):
-            symbols_and_positions = extract_numbers_and_chars_from_line(line)
-            if symbols_and_positions:
-                print(f"Row {row_num}:")
-                for symbol, position in symbols_and_positions:
-                    print(f"    Symbol: {symbol}, Position: {position}")
+            part_numbers = extract_numbers_from_line(line)
+            symbol_positions = find_symbols_positions(line, symbols_to_find)
+            
+            print(f"Row {row_num}: {', '.join(map(str, part_numbers))}")
+            if symbol_positions:
+                print(f"   Symbol positions: {symbol_positions}")
 
 if __name__ == "__main__":
     input_file_path = "Day 3/input.txt"

@@ -26,3 +26,15 @@ def process_input_file(file_path):
 if __name__ == "__main__":
     input_file_path = "Day 3/input.txt"
     process_input_file(input_file_path)
+
+north = 
+north_west = 
+north_east = 
+south = 
+south_east =
+south_west = 
+east = 
+west = 
+
+
+*#+$
