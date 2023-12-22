@@ -18,9 +18,17 @@ def read_input_file(file_path):
 
                         matching_numbers = winning_numbers_set.intersection(player_numbers_set)
                         matched_quantity = len(matching_numbers)
-                        
+
                         # Update card_score to 1 for each card that has a match
                         card_score = 1 if matched_quantity > 0 else 0
+
+                        if card_score == 1:
+                            # Subtract 1 from matched_quantity
+                            matched_quantity -= 1
+
+                            # Double card_score N number of times
+                            for _ in range(matched_quantity):
+                                card_score *= 2
 
                         print(f"Card {card_number} - Matching Numbers: {matching_numbers}, Points: {card_score}, Matched Quantity: {matched_quantity}")
 
