@@ -1,38 +1,31 @@
-# Filename: read_input.py
-
 def read_input_file(file_path):
+    CARD_PREFIX = "Card"
+    DELIMITER = ":"
+
     try:
         with open(file_path, 'r') as file:
-            # Read each line (card) sequentially
             for line in file:
                 line = line.strip()
 
-                # Skip lines that start with "Card"
-                if line.startswith("Card"):
-                    parts = line.split(":")
+                if line.startswith(CARD_PREFIX):
+                    parts = line.split(DELIMITER)
                     if len(parts) == 2:
                         card_number = parts[0].strip().split()[1]
-                        numbers = parts[1].strip().split("|")
+                        winning_numbers, player_numbers = map(str.split, parts[1].strip().split("|"))
 
-                        # Convert the numbers to sets for easy comparison
-                        winning_numbers_set = set(map(int, numbers[0].split()))
-                        player_numbers_set = set(map(int, numbers[1].split()))
+                        winning_numbers_set = set(map(int, winning_numbers))
+                        player_numbers_set = set(map(int, player_numbers))
 
-                        # Find the matching numbers
                         matching_numbers = winning_numbers_set.intersection(player_numbers_set)
+                        matched_quantity = len(matching_numbers)
+                        
+                        # Update card_score to 1 for each card that has a match
+                        card_score = 1 if matched_quantity > 0 else 0
 
-                        # Calculate points for the card
-                        points = 0
-                        multiplier = 1
-                        for number in matching_numbers:
-                            points += multiplier
-                            multiplier *= 2
-
-                        # Print the desired output format
-                        print(f"Card {card_number} - Matching Numbers: {matching_numbers}, Points: {points}")
+                        print(f"Card {card_number} - Matching Numbers: {matching_numbers}, Points: {card_score}, Matched Quantity: {matched_quantity}")
 
     except FileNotFoundError:
-        print(f"Error: File not found at {file_path}")
+        print(f"Error: Input file not found at {file_path}")
     except Exception as e:
         print(f"An error occurred: {e}")
 
