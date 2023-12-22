@@ -1,132 +1,37 @@
-import re
+# Filename: read_input.py
 
-def extract_numbers_from_line(line):
-    return [int(num) for num in re.findall(r'\d+', line)]
+def read_input_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            # Read each line (card) sequentially
+            for line in file:
+                line = line.strip()
 
-def find_symbols_positions(line, symbols):
-    positions = {}
-    for symbol in symbols:
-        symbol_positions = [pos.start() + 1 for pos in re.finditer(re.escape(symbol), line)]
-        if symbol_positions:
-            positions[symbol] = symbol_positions
-    return positions
+                # Skip lines that start with "Card"
+                if line.startswith("Card"):
+                    parts = line.split(":")
+                    if len(parts) == 2:
+                        card_number = parts[0].strip().split()[1]
+                        numbers = parts[1].strip().split("|")
 
-def process_input_file(file_path):
-    symbols_to_find = "*#+$"
-    
-    with open(file_path, 'r') as file:
-        for row_num, line in enumerate(file, start=1):
-            part_numbers = extract_numbers_from_line(line)
-            symbol_positions = find_symbols_positions(line, symbols_to_find)
-            
-            print(f"Row {row_num}: {', '.join(map(str, part_numbers))}")
-            if symbol_positions:
-                print(f"   Symbol positions: {symbol_positions}")
+                        # Convert the numbers to sets for easy comparison
+                        winning_numbers_set = set(map(int, numbers[0].split()))
+                        player_numbers_set = set(map(int, numbers[1].split()))
 
-if __name__ == "__main__":
-    input_file_path = "Day 3/input.txt"
-    process_input_file(input_file_path)
+                        # Find the matching numbers
+                        matching_numbers = winning_numbers_set.intersection(player_numbers_set)
 
-north = 
-north_west = 
-north_east = 
-south = 
-south_east =
-south_west = 
-east = 
-west = 
+                        # Update card_score to reflect the quantity of matched numbers
+                        card_score = len(matching_numbers)
 
+                        # Print the desired output format
+                        print(f"Card {card_number} - Matching Numbers: {matching_numbers}, Points: {card_score}")
 
-*#+$
-
-
-
-
-import re
-
-def extract_numbers_from_line(line):
-    return [int(num) for num in re.findall(r'\d+', line)]
-
-def find_symbols_positions(line, symbols):
-    positions = {}
-    for symbol in symbols:
-        symbol_positions = [pos.start() + 1 for pos in re.finditer(re.escape(symbol), line)]
-        if symbol_positions:
-            positions[symbol] = symbol_positions
-    return positions
-
-def scan(lines, row_num, symbol_position):
-    approved_numbers = []
-    
-    # Look 1 position to the right
-    match_right = re.search(r'\d+', lines[row_num][symbol_position:])
-    if match_right:
-        approved_numbers.append(int(match_right.group()))
-
-    # Look 1 position to the left
-    match_left = re.search(r'\d+', lines[row_num][:symbol_position])
-    if match_left:
-        approved_numbers.append(int(match_left.group()))
-
-    # Look at symbol_position on the preceding row
-    match_current = re.search(r'\d+', lines[row_num])
-    if match_current:
-        approved_numbers.append(int(match_current.group()))
-
-    # Look at symbol_position on the following row
-    if row_num + 1 < len(lines):
-        match_below = re.search(r'\d+', lines[row_num + 1])
-        if match_below:
-            approved_numbers.append(int(match_below.group()))
-
-    # Look at symbol_position + 1 on the preceding row
-    match_above_right = re.search(r'\d+', lines[row_num])
-    if match_above_right:
-        approved_numbers.append(int(match_above_right.group()))
-
-    # Look at symbol_position - 1 on the preceding row
-    match_above_left = re.search(r'\d+', lines[row_num])
-    if match_above_left:
-        approved_numbers.append(int(match_above_left.group()))
-
-    # Look at symbol_position + 1 on the following row
-    if row_num + 1 < len(lines):
-        match_below_right = re.search(r'\d+', lines[row_num + 1])
-        if match_below_right:
-            approved_numbers.append(int(match_below_right.group()))
-
-    # Look at symbol_position - 1 on the following row
-    if row_num + 1 < len(lines):
-        match_below_left = re.search(r'\d+', lines[row_num + 1])
-        if match_below_left:
-            approved_numbers.append(int(match_below_left.group()))
-
-    return approved_numbers
-
-def process_input_file(file_path):
-    symbols_to_find = "*#+$"
-    
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-
-    row_num = 0
-    for line in lines:
-        line = line.strip()
-        if line:
-            row_num += 1
-            part_numbers = extract_numbers_from_line(line)
-            symbol_positions = find_symbols_positions(line, symbols_to_find)
-            
-            row_data = f"Row {row_num} [{', '.join(map(str, part_numbers))}]"
-            
-            if symbol_positions:
-                for symbol, positions in symbol_positions.items():
-                    for symbol_position in positions:
-                        approved_numbers = scan(lines, row_num - 1, symbol_position - 1)
-                        print(f"{row_data} for {symbol} at position {symbol_position} [{', '.join(map(str, approved_numbers))}]")
-            else:
-                print(row_data)
+    except FileNotFoundError:
+        print(f"Error: File not found at {file_path}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
-    input_file_path = "Day 3/input.txt"
-    process_input_file(input_file_path)
+    input_file_path = "Day 4/input.txt"  # Replace with the correct path to your input file
+    read_input_file(input_file_path)

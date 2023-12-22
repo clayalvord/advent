@@ -21,8 +21,15 @@ def read_input_file(file_path):
                         # Find the matching numbers
                         matching_numbers = winning_numbers_set.intersection(player_numbers_set)
 
+                        # Calculate points for the card
+                        points = 0
+                        multiplier = 1
+                        for number in matching_numbers:
+                            points += multiplier
+                            multiplier *= 2
+
                         # Print the desired output format
-                        print(f"Card {card_number} - Matching Numbers: {matching_numbers}")
+                        print(f"Card {card_number} - Matching Numbers: {matching_numbers}, Points: {points}")
 
     except FileNotFoundError:
         print(f"Error: File not found at {file_path}")
