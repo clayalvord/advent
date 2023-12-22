@@ -1,88 +1,63 @@
-import re
+# Read input file and store each line in the schematic list
+with open("Day 3/input.txt") as file:
+    schematic = [line.rstrip("\n") for line in file]
 
-def extract_numbers_from_line(line):
-    return [int(num) for num in re.findall(r'\d+', line)]
+# Initialize variables
+used_positions = []
+part_sum = 0
+ratio_sum = 0
 
-def find_symbols_positions(line, symbols):
-    positions = {}
-    for symbol in symbols:
-        symbol_positions = [pos.start() + 1 for pos in re.finditer(re.escape(symbol), line)]
-        if symbol_positions:
-            positions[symbol] = symbol_positions
-    return positions
+# Iterate through each position in the schematic
+for y, line in enumerate(schematic):
+    for x, char in enumerate(line):
+        # Check if the character is not a dot or a number
+        if char not in ".0123456789":
+            adj_count = 0
+            ratio = 1
 
-def scan(lines, row_num, symbol_position):
-    approved_numbers = []
-    
-    # Look 1 position to the right
-    match_right = re.search(r'\d+', lines[row_num][symbol_position:])
-    if match_right:
-        approved_numbers.append(int(match_right.group()))
+            # Define relative positions of adjacent cells
+            adjacent_positions = [
+                (x + 1, y), (x + 1, y + 1), (x, y + 1), (x - 1, y + 1),
+                (x - 1, y), (x - 1, y - 1), (x, y - 1), (x + 1, y - 1)
+            ]
 
-    # Look 1 position to the left
-    match_left = re.search(r'\d+', lines[row_num][:symbol_position])
-    if match_left:
-        approved_numbers.append(int(match_left.group()))
+            # Check each adjacent position
+            for pos in adjacent_positions:
+                # Check if the position is within the bounds of the schematic
+                if 0 <= pos[0] < len(line) and 0 <= pos[1] < len(schematic):
+                    # Check if the character at the position is a number
+                    if schematic[pos[1]][pos[0]] in "0123456789" and pos not in used_positions:
+                        part = schematic[pos[1]][pos[0]]
+                        used_positions.append(pos)
 
-    # Look at symbol_position on the preceding row
-    match_current = re.search(r'\d+', lines[row_num])
-    if match_current:
-        approved_numbers.append(int(match_current.group()))
+                        # Check positions to the left of the current position
+                        for direction in [-1, 1]:
+                            check_x = pos[0] + direction
 
-    # Look at symbol_position on the following row
-    if row_num + 1 < len(lines):
-        match_below = re.search(r'\d+', lines[row_num + 1])
-        if match_below:
-            approved_numbers.append(int(match_below.group()))
+                            while (
+                                0 <= check_x < len(line)
+                                and schematic[pos[1]][check_x] in "0123456789"
+                                and (check_x, pos[1]) not in used_positions
+                            ):
+                                part = (
+                                    schematic[pos[1]][check_x] + part
+                                    if direction == -1
+                                    else part + schematic[pos[1]][check_x]
+                                )
+                                used_positions.append((check_x, pos[1]))
+                                check_x += direction
 
-    # Look at symbol_position + 1 on the preceding row
-    match_above_right = re.search(r'\d+', lines[row_num])
-    if match_above_right:
-        approved_numbers.append(int(match_above_right.group()))
+                        part_sum += int(part)
 
-    # Look at symbol_position - 1 on the preceding row
-    match_above_left = re.search(r'\d+', lines[row_num])
-    if match_above_left:
-        approved_numbers.append(int(match_above_left.group()))
+                        # Check if the current character is "*" and the adjacent count is less than 2
+                        if char == "*" and adj_count < 2:
+                            adj_count += 1
+                            ratio *= int(part)
 
-    # Look at symbol_position + 1 on the following row
-    if row_num + 1 < len(lines):
-        match_below_right = re.search(r'\d+', lines[row_num + 1])
-        if match_below_right:
-            approved_numbers.append(int(match_below_right.group()))
+            # Check if the adjacent count is 2 and update the ratio sum
+            if adj_count == 2:
+                ratio_sum += ratio
 
-    # Look at symbol_position - 1 on the following row
-    if row_num + 1 < len(lines):
-        match_below_left = re.search(r'\d+', lines[row_num + 1])
-        if match_below_left:
-            approved_numbers.append(int(match_below_left.group()))
-
-    return approved_numbers
-
-def process_input_file(file_path):
-    symbols_to_find = "*#+$"
-    
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-
-    row_num = 0
-    for line in lines:
-        line = line.strip()
-        if line:
-            row_num += 1
-            part_numbers = extract_numbers_from_line(line)
-            symbol_positions = find_symbols_positions(line, symbols_to_find)
-            
-            row_data = f"Row {row_num} [{', '.join(map(str, part_numbers))}]"
-            
-            if symbol_positions:
-                for symbol, positions in symbol_positions.items():
-                    for symbol_position in positions:
-                        approved_numbers = scan(lines, row_num - 1, symbol_position - 1)
-                        print(f"{row_data} for {symbol} at position {symbol_position} [{', '.join(map(str, approved_numbers))}]")
-            else:
-                print(row_data)
-
-if __name__ == "__main__":
-    input_file_path = "Day 3/input.txt"
-    process_input_file(input_file_path)
+# Print results
+print(f"Part 1: {part_sum}")
+print(f"Part 2: {ratio_sum}")
