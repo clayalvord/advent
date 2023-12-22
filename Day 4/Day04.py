@@ -20,6 +20,10 @@ def main():
 
     total_points = 0
     for card in puzzle_input:
+        # Skip lines that don't contain the expected format
+        if "|" not in card:
+            continue
+
         points = calculate_points(card)
         total_points += points
 
